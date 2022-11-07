@@ -137,7 +137,7 @@ def main():
 
     augmentations = []
     if not args.disable_aug:
-        from utils.autoaug import CIFAR10Policy
+        from utils import CIFAR10Policy
         augmentations += [
             CIFAR10Policy()
         ]
