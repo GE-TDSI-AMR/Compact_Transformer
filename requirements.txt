@@ -1,0 +1,7 @@
+apex
+pyyaml
+torchvision
+torch
+timm
+wandb
+wget
