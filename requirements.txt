@@ -5,3 +5,4 @@ torch
 timm
 wandb
 wget
+matplotlib==3.5.3
