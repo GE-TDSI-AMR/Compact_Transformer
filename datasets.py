@@ -25,3 +25,4 @@ def data_download():
 
 if __name__ == "__main__":
     data_download()
+    print("abdoul")
