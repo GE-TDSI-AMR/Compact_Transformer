@@ -38,7 +38,7 @@ from timm.optim import create_optimizer_v2, optimizer_kwargs
 from timm.scheduler import create_scheduler
 from timm.utils import ApexScaler, NativeScaler
 
-from .src import *
+from src import *
 
 try:
     from apex import amp
