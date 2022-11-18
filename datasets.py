@@ -10,13 +10,18 @@ data_sets_urls = {
 
 data_sets_path = 'datasets/'
 
-if __name__ == "__main__":
+
+def data_download():
     try:
         os.mkdir(data_sets_path)
     except OSError as error:
-        print(error)
+        print("/datasets folder already exist")
 
     for data_set, url in data_sets_urls.items():
         path = f'{data_sets_path}{data_set}.tar.gz'
         if not os.path.exists(path):
             wget.download(url, path)
+
+
+if __name__ == "__main__":
+    data_download()
