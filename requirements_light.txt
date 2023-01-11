@@ -11,12 +11,25 @@ tqdm==4.64.1
 # torch dependencies:
 nvidia-cuda-nvrtc-cu11==11.7.99
 nvidia-cuda-runtime-cu11==11.7.99
+typing-extensions==4.4.0
 nvidia-cudnn-cu11==8.5.0.96
 nvidia-cublas-cu11==11.10.3.66
+    # torch sub requirements
+wheel==0.38.4
+setuptools==40.8.0
 
 # torchvision dependencies:
 Pillow==9.4.0
 numpy==1.24.1
+#typing-extension
+#torch
+#requests
+
+# requests dependencies:
+idna==3.4
+urllib3==1.26.13
+charset-normalizer==2.1.1
+certifi==2022.12.7
 
 
 # matplotlib dependencies:
