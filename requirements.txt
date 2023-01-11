@@ -1,8 +1,104 @@
+# main:
+apex==0.9.10.dev0
 matplotlib==3.5.3
-apex
-pyyaml
-torchvision
-torch
-timm
-wandb
-wget
+timm==0.6.12
+wget==3.2
+wandb==0.13.7
+PyYAML==6.0
+torch==1.13.1
+torchvision==0.14.1
+
+
+# matplotlib dependencies:
+# numpy
+# packaging
+fonttools==4.38.0
+cycler==0.11.0
+pyparsing==3.0.9
+kiwisolver==1.4.4
+python-dateutil==2.8.2
+# pillow
+
+# dateutil and promise dependencies
+six==1.16.0
+
+
+# timm dependencies:
+huggingface-hub==0.11.1
+# pyyml
+# torch>=1.7
+# torchvision
+
+# huggingface-hub dependencies:
+packaging==23.0
+filelock==3.9.0
+tqdm==4.64.1
+requests==2.28.1
+typing-extensions==4.4.0
+
+# torch dependencies:
+nvidia-cuda-nvrtc-cu11==11.7.99
+nvidia-cuda-runtime-cu11==11.7.99
+nvidia-cudnn-cu11==8.5.0.96
+nvidia-cublas-cu11==11.10.3.66
+
+# torchvision dependencies:
+Pillow==9.4.0
+numpy==1.24.1
+
+# requests dependencies:
+idna==3.4
+urllib3==1.26.13
+charset-normalizer==2.1.1
+certifi==2022.12.7
+
+# apex dependencies:
+pbkdf2==1.3
+cryptacular==1.6.2
+greenlet==2.0.1
+SQLAlchemy==1.4.46
+zope.interface==5.5.2
+transaction==3.0.1
+zope.sqlalchemy==1.6
+PasteDeploy==3.0.1
+plaster==1.1.2
+plaster-pastedeploy==1.0.1
+hupper==1.11
+translationstring==1.4
+venusian==3.0.0
+zope.deprecation==4.4.0
+WebOb==1.8.7
+pyramid==2.0
+oauthlib==3.2.2
+requests-oauthlib==1.3.1
+anykeystore==0.2
+defusedxml==0.7.1
+python3-openid==3.2.0
+velruse==1.1.1
+repoze.sendmail==4.4.1
+pyramid-mailer==0.15.1
+MarkupSafe==2.1.1
+WTForms==3.0.1
+wtforms-recaptcha==0.3.2
+
+
+# wandb dependencies:
+protobuf==4.21.12
+GitPython==3.1.30
+psutil==5.9.4
+promise==2.3
+docker-pycreds==0.4.0
+click==8.1.3
+pathtools==0.1.2
+setproctitle==1.3.2
+shortuuid==1.0.11
+# requests
+# pyyaml
+sentry-sdk==1.12.1
+# setuptools
+
+# GitPython dependencies:
+gitdb==4.0.10
+
+# gitdb dependencies:
+smmap==5.0.0

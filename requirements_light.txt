@@ -1,0 +1,39 @@
+# main:
+matplotlib==3.5.3
+wget==3.2
+PyYAML==6.0
+torch==1.13.1
+torchvision==0.14.1
+
+tqdm==4.64.1
+
+
+# torch dependencies:
+nvidia-cuda-nvrtc-cu11==11.7.99
+nvidia-cuda-runtime-cu11==11.7.99
+nvidia-cudnn-cu11==8.5.0.96
+nvidia-cublas-cu11==11.10.3.66
+
+# torchvision dependencies:
+Pillow==9.4.0
+numpy==1.24.1
+
+
+# matplotlib dependencies:
+# numpy
+packaging==23.0
+fonttools==4.38.0
+cycler==0.11.0
+pyparsing==3.0.9
+kiwisolver==1.4.4
+python-dateutil==2.8.2
+# pillow
+
+# dateutil and promise dependencies
+six==1.16.0
+
+
+# removed:
+# from ImageNet code reproduction to speed up the code
+    # timm only for model registration + new model training method
+    # apex/native amp for using float32
