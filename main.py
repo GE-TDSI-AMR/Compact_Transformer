@@ -122,6 +122,10 @@ def main():
                                         n_conv_layers=args.conv_layers,
                                         kernel_size=args.conv_size,
                                         patch_size=args.patch_size)
+    # transforme SRC=models en dict (donc cct, cvt...)
+    # args transforme le parseur en plein d'arguments comme on a vu en opencl
+    # avec une phrase découpée mais ici c'est en plus puissant
+    # mais ils ont modifié leur code
 
     criterion = LabelSmoothingCrossEntropy()
 

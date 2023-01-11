@@ -8,7 +8,8 @@ try:
     from timm.models.registry import register_model
 except ImportError:
     from .registry import register_model
-
+    # ça ne vaut donc pas le coup d'import timm car c'est juste pour une méthode
+    # on utilise les décorrateurs derrière
 model_urls = {
 }
 
