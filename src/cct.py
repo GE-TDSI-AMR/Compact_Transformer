@@ -30,45 +30,51 @@ model_urls = {
 
 
 class CCT(nn.Module):
-    def __init__(self,
-                 img_size=224,
-                 embedding_dim=768,
-                 n_input_channels=3,
-                 n_conv_layers=1,
-                 kernel_size=7,
-                 stride=2,
-                 padding=3,
-                 pooling_kernel_size=3,
-                 pooling_stride=2,
-                 pooling_padding=1,
-                 dropout=0.,
-                 attention_dropout=0.1,
-                 stochastic_depth=0.1,
-                 num_layers=14,
-                 num_heads=6,
-                 mlp_ratio=4.0,
-                 num_classes=1000,
-                 positional_embedding='learnable',
-                 *args, **kwargs):
+    def __init__(
+        self,
+        img_size=224,
+        embedding_dim=768,
+        n_input_channels=3,
+        n_conv_layers=1,
+        kernel_size=7,
+        stride=2,
+        padding=3,
+        pooling_kernel_size=3,
+        pooling_stride=2,
+        pooling_padding=1,
+        dropout=0.,
+        attention_dropout=0.1,
+        stochastic_depth=0.1,
+        num_layers=14,
+        num_heads=6,
+        mlp_ratio=4.0,
+        num_classes=1000,
+        positional_embedding='learnable',
+        *args, **kwargs
+    ):
         super(CCT, self).__init__()
 
-        self.tokenizer = Tokenizer(n_input_channels=n_input_channels,
-                                   n_output_channels=embedding_dim,
-                                   kernel_size=kernel_size,
-                                   stride=stride,
-                                   padding=padding,
-                                   pooling_kernel_size=pooling_kernel_size,
-                                   pooling_stride=pooling_stride,
-                                   pooling_padding=pooling_padding,
-                                   max_pool=True,
-                                   activation=nn.ReLU,
-                                   n_conv_layers=n_conv_layers,
-                                   conv_bias=False)
+        self.tokenizer = Tokenizer(
+            n_input_channels=n_input_channels,
+            n_output_channels=embedding_dim,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            pooling_kernel_size=pooling_kernel_size,
+            pooling_stride=pooling_stride,
+            pooling_padding=pooling_padding,
+            max_pool=True,
+            activation=nn.ReLU,
+            n_conv_layers=n_conv_layers,
+            conv_bias=False
+        )
 
         self.classifier = TransformerClassifier(
-            sequence_length=self.tokenizer.sequence_length(n_channels=n_input_channels,
-                                                           height=img_size,
-                                                           width=img_size),
+            sequence_length=self.tokenizer.sequence_length(
+                n_channels=n_input_channels,
+                height=img_size,
+                width=img_size
+            ),
             embedding_dim=embedding_dim,
             seq_pool=True,
             dropout=dropout,
@@ -349,3 +355,18 @@ def cct_14_7x2_384_fl(pretrained=False, progress=False,
                   img_size=img_size, positional_embedding=positional_embedding,
                   num_classes=num_classes,
                   *args, **kwargs)
+
+
+@register_model
+def cct_7_7x3_384_fl(
+    pretrained=False, progress=False,
+    img_size=384, positional_embedding='learnable', num_classes=102,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_7x2_384_fl', pretrained, progress,
+        kernel_size=7, n_conv_layers=3,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )

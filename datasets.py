@@ -20,9 +20,9 @@ import src as models
 
 data_sets_urls = {
     'cifar10':
-        'http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz',
+        'https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz',
     'cifar100':
-        'http://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz',
+        'https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz',
 }
 
 DATASETS = {
@@ -37,11 +37,17 @@ DATASETS = {
         'img_size': 32,
         'mean': [0.5071, 0.4867, 0.4408],
         'std': [0.2675, 0.2565, 0.2761]
+    },
+    'medmnist': {
+        'num_classes': 2
     }
 }
 
 data_sets_path = 'datasets/'
 checkpoint_path = 'saved/'
+
+args_dataset = "cifar100"
+args_model = 'cct_7_3x1_32_c100'
 
 
 def gz_extract(directory):
@@ -147,7 +153,7 @@ def cls_train(train_loader, model, criterion, optimizer, epoch, args_no_cuda, ar
             print(f'[Epoch {epoch + 1}][Train][{i}] \t Loss: {avg_loss:.4e} \t Top-1 {avg_acc1:6.2f}')
 
 
-def cls_validate(val_loader, model, criterion, args_no_cuda, args_gpu_id, epoch=None, time_begin=None, print_freq=10):
+def cls_validate(val_loader, model, criterion, args_no_cuda, args_gpu_id, epoch=0, time_begin=None, print_freq=10):
     model.eval()
     loss_val, acc1_val = 0, 0
     n = 0
@@ -178,7 +184,7 @@ def cls_validate(val_loader, model, criterion, args_no_cuda, args_gpu_id, epoch=
 
 def training(model, train_loader, val_loader, print_freq=10):
     #           gpu parameters
-    args_no_cuda = True
+    args_no_cuda = False
     args_gpu_id = 0
 
     #           training parameters
@@ -186,7 +192,7 @@ def training(model, train_loader, val_loader, print_freq=10):
     args_weight_decay = 1e-4
     args_epochs = 200
 
-    args_warmup = False
+    args_warmup = 5
     args_disable_cos = True
     args_clip_grad_norm = 0
 
@@ -211,27 +217,62 @@ def training(model, train_loader, val_loader, print_freq=10):
     time_begin = time()
     for epoch in range(args_epochs):
         adjust_learning_rate(optimizer, epoch, args_lr, args_epochs, args_warmup, args_disable_cos)
-        cls_train(train_loader, model, criterion, optimizer, epoch, args_no_cuda, args_gpu_id, args_clip_grad_norm, print_freq)
+        cls_train(
+            train_loader, model, criterion, optimizer, epoch,
+            args_no_cuda, args_gpu_id, args_clip_grad_norm, print_freq=print_freq
+        )
         acc1 = cls_validate(
             val_loader, model, criterion, args_no_cuda, args_gpu_id,
-            epoch=epoch, time_begin=time_begin, print_freq=10
+            epoch=epoch, time_begin=time_begin, print_freq=print_freq
         )
         best_acc1 = max(acc1, best_acc1)
+        if print_freq >= 0 and (epoch+1) % print_freq == 0:
+            torch.save(model.state_dict(), checkpoint_path + f"/dataset-{args_dataset}_model-{args_model}_epoch{epoch+1}.pt")
+            print(f"dataset-{args_dataset}_model-{args_model}_epoch{epoch+1}.pt" + " was saved in " + checkpoint_path)
 
     total_mins = (time() - time_begin) / 60
     print(f'Script finished in {total_mins:.2f} minutes, '
           f'best top-1: {best_acc1:.2f}, '
           f'final top-1: {acc1:.2f}')
-    torch.save(model.state_dict(), checkpoint_path)
+    torch.save(model.state_dict(), checkpoint_path + f"/dataset-{args_dataset}_model-{args_model}_final.pt")
 
     return best_acc1
 
 
-def train():
-    #           dataset parameters
-    data_download()
+def evaluate(model, val_loader, print_freq=10):
+    #           gpu parameters
+    args_no_cuda = False
+    args_gpu_id = 0
 
-    args_dataset = "cifar100"
+    #           training components
+    criterion = LabelSmoothingCrossEntropy()
+
+    if (not args_no_cuda) and torch.cuda.is_available():
+        torch.cuda.set_device(args_gpu_id)
+        model.cuda(args_gpu_id)
+        criterion = criterion.cuda(args_gpu_id)
+
+    #           training execution
+    print("Beginning evaluation")
+    time_begin = time()
+    acc1 = cls_validate(
+        val_loader, model, criterion,
+        args_no_cuda, args_gpu_id,
+        time_begin=time_begin, print_freq=print_freq
+    )
+
+    total_mins = (time() - time_begin) / 60
+    print(f'Script finished in {total_mins:.2f} minutes, '
+          f'final top-1: {acc1:.2f}')
+
+
+def train():
+    #           configs
+    args_load_model = True
+    args_training = False
+
+    #           dataset parameters
+    # data_download()
 
     img_size = DATASETS[args_dataset]['img_size']
     num_classes = DATASETS[args_dataset]['num_classes']
@@ -241,6 +282,7 @@ def train():
     args_disable_aug = False
 
     augmentations = []
+
     if not args_disable_aug:
         from utils.autoaug import CIFAR10Policy
 
@@ -296,13 +338,24 @@ def train():
     )
 
     #           model definition
-    args_model = 'cct_7_3x1_32_c100'
-
     model = models.__dict__[args_model](pretrained=False)
+    if args_load_model:
+        max_epoch = max([
+            int(file.split(".")[0].split("epoch")[1]) for file in os.listdir(checkpoint_path)
+            if file.startswith(f"dataset-{args_dataset}_model-{args_model}_epoch")
+        ])
+        model_path = f"{checkpoint_path}dataset-{args_dataset}_model-{args_model}_epoch{max_epoch}.pt"
+        print(model_path)
+        model.load_state_dict(torch.load(model_path))
+
+    print(model)
 
     #           training
-    print_freq = 1
-    best_acc1 = training(model, train_loader, val_loader, print_freq)
+    print_freq = 10
+    if args_training:
+        best_acc1 = training(model, train_loader, val_loader, print_freq)
+
+    evaluate(model, val_loader, print_freq=print_freq)
 
 
 if __name__ == "__main__":

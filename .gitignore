@@ -171,3 +171,4 @@ Supprimerait .idea/vcs.xml
 Supprimerait src/__pycache__/
 Supprimerait src/utils/__pycache__/
 Supprimerait utils/__pycache__/
+/data/
