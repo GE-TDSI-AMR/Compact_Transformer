@@ -53,8 +53,8 @@ def tensor_manip():
 
 def training_mnist():
     available_datasets()
-    model_name = 'cct_7_3x1_28_9'
-    dataset_name = 'pathmnist'
+    model_name = 'cct_7_3x1_28_11'
+    dataset_name = 'organsmnist'
 
     t_context = TrainingContext(
         dataset_name=dataset_name,
@@ -64,7 +64,7 @@ def training_mnist():
         pretrained=False,
         load_model=True,
         checkpoint_path="saved/",
-        save_freq=10,
+        save_freq=5,
         saving=True,
         print_freq=10,
         printing=True
@@ -79,10 +79,10 @@ def training_mnist():
         context=t_context,
         no_cuda=False,
         gpu_id=0,
-        lr=5e-4,
-        weight_decay=1e-4,
-        epochs=200,
-        warmup=5,
+        lr=55e-5,
+        weight_decay=6e-2,
+        epochs=100,
+        warmup=2,
         disable_cos=True,
         clip_grad_norm=0,
     )

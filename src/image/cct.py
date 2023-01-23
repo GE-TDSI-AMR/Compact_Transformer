@@ -34,7 +34,7 @@ class CCT(nn.Module):
         self,
         img_size=224,
         embedding_dim=768,
-        n_input_channels=3,
+        n_input_channels=1,
         n_conv_layers=1,
         kernel_size=7,
         stride=2,
@@ -365,6 +365,117 @@ def cct_7_3x1_28_9(
 ):
     return cct_7(
         'cct_7_3x1_28_9', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )
+
+
+@register_model
+def cct_7_3x1_28_5(
+    pretrained=False, progress=False,
+    img_size=28, positional_embedding='learnable', num_classes=5,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_3x1_28_5', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )
+
+
+#chestmnist
+@register_model
+def cct_7_3x1_28_14(
+    pretrained=False, progress=False,
+    img_size=28, positional_embedding='learnable', num_classes=14,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_3x1_28_14', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )
+
+
+#octmnist
+@register_model
+def cct_7_3x1_28_4(
+    pretrained=False, progress=False,
+    img_size=28, positional_embedding='learnable', num_classes=4,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_3x1_28_4', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )
+
+
+#bloodmnist et tissuemnist
+@register_model
+def cct_7_3x1_28_8(
+    pretrained=False, progress=False,
+    img_size=28, positional_embedding='learnable', num_classes=8,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_3x1_28_8', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )
+
+
+#pneumoniamnist et breastmnist
+@register_model
+def cct_7_3x1_28_2(
+    pretrained=False, progress=False,
+    img_size=28, positional_embedding='learnable', num_classes=2,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_3x1_28_2', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )
+
+
+#organmnist
+@register_model
+def cct_7_3x1_28_11(
+    pretrained=False, progress=False,
+    img_size=28, positional_embedding='learnable', num_classes=11,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_3x1_28_11', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
+        img_size=img_size, positional_embedding=positional_embedding,
+        num_classes=num_classes,
+        *args, **kwargs
+    )
+
+
+#dermamnist
+@register_model
+def cct_7_3x1_28_7(
+    pretrained=False, progress=False,
+    img_size=28, positional_embedding='learnable', num_classes=7,
+    *args, **kwargs
+):
+    return cct_7(
+        'cct_7_3x1_28_7', pretrained, progress,
         kernel_size=3, n_conv_layers=1,
         img_size=img_size, positional_embedding=positional_embedding,
         num_classes=num_classes,
