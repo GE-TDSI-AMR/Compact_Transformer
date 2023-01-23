@@ -78,12 +78,12 @@ def medmnist_ds(dataset_name, data_class):
 
     # load the data
     train_dataset = data_class(
-        root=datasets_path, split='train',
+        split='train',
         transform=data_transform, download=True,
         target_transform=lambda x: tensor(*x)
     )
     val_dataset = data_class(
-        root=datasets_path, split='test',
+        split='test',
         transform=data_transform, download=True,
         target_transform=lambda x: tensor(*x)
     )
