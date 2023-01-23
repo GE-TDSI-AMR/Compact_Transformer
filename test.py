@@ -112,6 +112,7 @@ def viz(file_name):
 
 
 if __name__ == "__main__":
-    viz("saved/history_dataset-organsmnist_model-cct_7_3x1_28_11_epoch29.pt")
-    viz("saved/history_dataset-pathmnist_model-cct_7_3x1_28_9_epoch39.pt")
-    viz("saved/history_dataset-retinamnist_model-cct_7_3x1_28_5_epoch119.pt")
+    training_mnist()
+    #viz("saved/history_dataset-organsmnist_model-cct_7_3x1_28_11_epoch29.pt")
+    #viz("saved/history_dataset-pathmnist_model-cct_7_3x1_28_9_epoch39.pt")
+    #viz("saved/history_dataset-retinamnist_model-cct_7_3x1_28_5_epoch119.pt")

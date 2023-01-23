@@ -23,7 +23,7 @@ def vis_accuracy(file_name, param, train_acc, test_acc, param_name="param"):
 
     # function to show plot
     plt.legend()
-    fig.savefig(f"{figures_path}/{}")
+    fig.savefig(f"{figures_path}/{figures_path}")
     #file_name.split(".")[0]
     plt.show()
 
