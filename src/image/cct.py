@@ -1,13 +1,13 @@
 from torch.hub import load_state_dict_from_url
 import torch.nn as nn
-from .utils.transformers import TransformerClassifier
-from .utils.tokenizer import Tokenizer
-from .utils.helpers import pe_check, fc_check
+from src.utils.transformers import TransformerClassifier
+from src.utils.tokenizer import Tokenizer
+from src.utils.helpers import pe_check, fc_check
 
 try:
     from timm.models.registry import register_model
 except ImportError:
-    from .registry import register_model
+    from src.registry import register_model
 
 model_urls = {
     'cct_7_3x1_32':

@@ -22,8 +22,10 @@ Our base model is in pure PyTorch and Torchvision. No extra packages are require
 Please refer to [PyTorch's Getting Started](https://pytorch.org/get-started/locally/) page for detailed instructions.
 
 For each model (transformer/vit/cvt/cct) sizes 2, 4 and 6 are available.
+
 ```python3
-from src.text import text_cct_2
+from src import text_cct_2
+
 model = text_cct_2(kernel_size=1)
 ```
 For kernel size, we have found that sizes 1, 2 and 4 perform best.

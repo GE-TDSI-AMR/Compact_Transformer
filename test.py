@@ -1,10 +1,9 @@
 import torch
-import medmnist
 
 import src as models
 import os
 
-from trainer import TrainingContext
+from trainer import TrainingContext, Trainer
 
 
 def reload():
@@ -24,6 +23,7 @@ def reload():
     model.load_state_dict(torch.load(model_path))
     return model
 
+
 def cct_naming(
     layers,
     kernel_size,
@@ -33,26 +33,21 @@ def cct_naming(
     classes
 ):
     pos_emb = f"_{positional_embedding}_" if positional_embedding != "learnable" else ""
-    name = f"cct_{layers}_{kernel_size}x{conv_layers}_{img_size}{pos_emb}{}
+    name = f"cct_{layers}_{kernel_size}x{conv_layers}_{img_size}{pos_emb}_{classes}"
     return name
-
 
 
 def model_naming(model_type: str, model_params: dict):
     return globals()[model_type + "_naming"](**model_params)
 
 
-
 if __name__ == "__main__":
 
     model_name = 'cct_7_3x1_32_c100'
-    train_dataset =
-    val_dataset =
+    dataset_name = 'cifar100'
 
-    TrainingContext(
-        dataset_name="cifar100",
-        train_dataset=train_dataset,
-        val_dataset=val_dataset,
+    t_context = TrainingContext(
+        dataset_name=dataset_name,
         model_name=model_name,
         batch_size=256,
         workers=4,
@@ -64,3 +59,18 @@ if __name__ == "__main__":
         print_freq=10,
         printing=True
     )
+
+    cct = Trainer(
+        context=t_context,
+        no_cuda=False,
+        gpu_id=0,
+        lr=5e-4,
+        weight_decay=1e-4,
+        epochs=200,
+        warmup=5,
+        disable_cos=True,
+        clip_grad_norm=0,
+
+    )
+
+    cct.training()

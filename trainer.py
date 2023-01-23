@@ -8,16 +8,25 @@ import torch
 from torch import nn
 from torch.optim import Optimizer
 from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms
 
-import src as models
+import src.image as models
+import src.datasets.datasets as datasets
+from utils.losses import LabelSmoothingCrossEntropy
+
+model_names = sorted(
+    name for name in models.__dict__
+    if name.islower() and not name.startswith("_")
+    and callable(models.__dict__[name])
+)
 
 
 @dataclass
 class TrainingContext:
     # Datasets
     dataset_name: str
-    train_dataset: Dataset
-    val_dataset: Dataset
+    train_dataset: Dataset = field(init=False)
+    val_dataset: Dataset = field(init=False)
 
     # Data Loaders
     train_loader: DataLoader = field(init=False)
@@ -44,6 +53,8 @@ class TrainingContext:
     printing: bool = True
 
     def __post_init__(self):
+        self.train_dataset, self.val_dataset = datasets.ds(dataset_name=self.dataset_name)
+
         self.train_loader = DataLoader(
             self.train_dataset,
             batch_size=self.batch_size,
@@ -112,6 +123,11 @@ class Trainer:
     optimizer: Optimizer = field(init=False)
 
     def __post_init__(self):
+        self.criterion = LabelSmoothingCrossEntropy()
+        self.optimizer = torch.optim.AdamW(
+            self.context.model.parameters(), lr=self.lr, weight_decay=self.weight_decay
+        )
+
         self.cuda_usage = (not self.no_cuda) and torch.cuda.is_available()
         if self.cuda_usage:
             self.cuda_activation()
@@ -146,7 +162,9 @@ class Trainer:
         n = 0
 
         with torch.no_grad() if not train else nullcontext():
-            for i, (images, target) in enumerate(self.context.train_loader):
+            for i, (images, target) in enumerate(
+                    self.context.train_loader if train else self.context.val_loader
+            ):
                 if self.cuda_usage:
                     images, target = self.data_to_cuda(images, target)
 
@@ -179,6 +197,7 @@ class Trainer:
     def training(self):
         #           training execution
         best_acc1 = 0
+        avg_val_acc1 = 0
         print("Beginning training")
         time_begin = time()
         while self.context.epoch-1 <= self.epochs:
@@ -195,12 +214,28 @@ class Trainer:
                 self.context.model_saving()
 
         total_time = (time() - time_begin) / 60
-        print(f'Script finished in {total_time:.2f} minutes, '
-              f'best top-1: {best_acc1:.2f}, '
-              f'final top-1: {avg_val_acc1:.2f}')
+        print(
+            f'Script finished in {total_time:.2f} minutes, '
+            f'best top-1: {best_acc1:.2f}, '
+            f'final top-1: {avg_val_acc1:.2f}'
+        )
         self.context.model_saving()
 
         return best_acc1
+
+    def evaluation(self):
+        #           evaluation execution
+        print("Beginning evaluation")
+        time_begin = time()
+        avg_val_loss, avg_val_acc1 = self.epoch(train=False)
+
+        total_time = (time() - time_begin) / 60
+        print(
+            f'Script finished in {total_time:.2f} minutes, '
+            f'final top-1: {avg_val_acc1:.2f}'
+        )
+
+        return avg_val_acc1
 
     @staticmethod
     def accuracy(output, target):

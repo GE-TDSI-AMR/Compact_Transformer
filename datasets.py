@@ -339,6 +339,7 @@ def train():
 
     #           model definition
     model = models.__dict__[args_model](pretrained=False)
+    print(model)
     if args_load_model:
         max_epoch = max([
             int(file.split(".")[0].split("epoch")[1]) for file in os.listdir(checkpoint_path)
