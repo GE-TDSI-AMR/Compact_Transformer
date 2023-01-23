@@ -358,14 +358,14 @@ def cct_14_7x2_384_fl(pretrained=False, progress=False,
 
 
 @register_model
-def cct_7_7x3_384_fl(
+def cct_7_3x1_28_9(
     pretrained=False, progress=False,
-    img_size=384, positional_embedding='learnable', num_classes=102,
+    img_size=28, positional_embedding='learnable', num_classes=9,
     *args, **kwargs
 ):
     return cct_7(
-        'cct_7_7x2_384_fl', pretrained, progress,
-        kernel_size=7, n_conv_layers=3,
+        'cct_7_3x1_28_9', pretrained, progress,
+        kernel_size=3, n_conv_layers=1,
         img_size=img_size, positional_embedding=positional_embedding,
         num_classes=num_classes,
         *args, **kwargs

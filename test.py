@@ -1,8 +1,11 @@
 import torch
+from torch import tensor
+from torchvision.transforms import transforms
 
 import src.image as models
 import os
 
+from src.datasets.datasets import available_datasets
 from trainer import TrainingContext, Trainer
 
 
@@ -41,11 +44,17 @@ def model_naming(model_type: str, model_params: dict):
     return globals()[model_type + "_naming"](**model_params)
 
 
-if __name__ == "__main__":
-    reload()
-    print("reoaeldd")
-    model_name = 'cct_7_3x1_32_c100'
-    dataset_name = 'CIFAR100'
+def tensor_manip():
+    a = tensor([10])
+    tr = lambda x: tensor(*x)
+    target_transform = transforms.Compose([tr])
+    print(target_transform(a))
+
+
+def training_mnist():
+    available_datasets()
+    model_name = 'cct_7_3x1_28_9'
+    dataset_name = 'pathmnist'
 
     t_context = TrainingContext(
         dataset_name=dataset_name,
@@ -61,9 +70,14 @@ if __name__ == "__main__":
         printing=True
     )
 
+    print(t_context.train_dataset)
+    for img, label in t_context.train_loader:
+        print(type(label))
+        break
+
     cct = Trainer(
         context=t_context,
-        no_cuda=True,
+        no_cuda=False,
         gpu_id=0,
         lr=5e-4,
         weight_decay=1e-4,
@@ -71,7 +85,10 @@ if __name__ == "__main__":
         warmup=5,
         disable_cos=True,
         clip_grad_norm=0,
-
     )
 
     cct.training()
+
+
+if __name__ == "__main__":
+    training_mnist()

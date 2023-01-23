@@ -1,4 +1,5 @@
 import medmnist
+from torch import tensor
 
 from torchvision.transforms import transforms
 import torchvision.datasets as datasets
@@ -76,8 +77,16 @@ def medmnist_ds(dataset_name, data_class):
     ])
 
     # load the data
-    train_dataset = data_class(split='train', transform=data_transform, download=True)
-    val_dataset = data_class(split='test', transform=data_transform, download=True)
+    train_dataset = data_class(
+        root=datasets_path, split='train',
+        transform=data_transform, download=True,
+        target_transform=lambda x: tensor(*x)
+    )
+    val_dataset = data_class(
+        root=datasets_path, split='test',
+        transform=data_transform, download=True,
+        target_transform=lambda x: tensor(*x)
+    )
 
     return train_dataset, val_dataset
 
