@@ -77,7 +77,9 @@ def training_mnist():
         printing=False
     )
 
+    print(dataset_name)
     print(t_context.train_dataset)
+    print(model_name)
     print(t_context.model)
 
     cct = Trainer(
