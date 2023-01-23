@@ -5,6 +5,7 @@ from torchvision.transforms import transforms
 import src.image as models
 import os
 
+import vizualisation
 from src.datasets.datasets import available_datasets
 from trainer import TrainingContext, Trainer
 
@@ -14,8 +15,9 @@ def reload():
 
     args_dataset = "cifar100"
 
-    args_model = 'cct_7_3x1_32_c100'
+    args_model = 'cct_7_3x10_32_c100'
     model = models.__dict__[args_model](pretrained=False)
+    print(model)
 
     max_epoch = max([
         int(file.split(".")[0].split("epoch")[1]) for file in os.listdir(checkpoint_path)
@@ -25,6 +27,11 @@ def reload():
     print(model_path)
     model.load_state_dict(torch.load(model_path))
     return model
+
+
+def print_model(model_name='cct_7_4x10_32_c100'):
+    model = models.__dict__[model_name](pretrained=False)
+    print(model)
 
 
 def cct_naming(
@@ -53,8 +60,8 @@ def tensor_manip():
 
 def training_mnist():
     available_datasets()
-    model_name = 'cct_7_3x1_28_11'
-    dataset_name = 'organsmnist'
+    model_name = 'cct_7_3x1_28_9'
+    dataset_name = 'pathmnist'
 
     t_context = TrainingContext(
         dataset_name=dataset_name,
@@ -62,7 +69,7 @@ def training_mnist():
         batch_size=256,
         workers=4,
         pretrained=False,
-        load_model=True,
+        load_model=False,
         checkpoint_path="saved/",
         save_freq=5,
         saving=True,
@@ -88,6 +95,20 @@ def training_mnist():
     )
 
     cct.training()
+
+
+def viz(file_name):
+    # training_mnist()
+    h = torch.load(file_name)
+    print(h)
+    data = [list(ele) for ele in list(zip(*h["history"]))]
+    print(data)
+    vizualisation.vis_accuracy(
+        param=range(len(h["history"])), train_acc=data[1], test_acc=data[3], param_name="Accuracy"
+    )
+    vizualisation.vis_accuracy(
+        param=range(len(h["history"])), train_acc=data[0], test_acc=data[2], param_name="Loss"
+    )
 
 
 if __name__ == "__main__":

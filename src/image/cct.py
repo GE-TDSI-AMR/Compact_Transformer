@@ -34,7 +34,7 @@ class CCT(nn.Module):
         self,
         img_size=224,
         embedding_dim=768,
-        n_input_channels=1,
+        n_input_channels=3,
         n_conv_layers=1,
         kernel_size=7,
         stride=2,
