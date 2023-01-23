@@ -86,7 +86,7 @@ def training_mnist():
         gpu_id=0,
         lr=55e-5,
         weight_decay=6e-2,
-        epochs=100,
+        epochs=20,
         warmup=2,
         disable_cos=True,
         clip_grad_norm=0,
