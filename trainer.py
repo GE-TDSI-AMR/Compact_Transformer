@@ -94,9 +94,15 @@ class TrainingContext:
             self.model.state_dict(),
             self.checkpoint_path + file_name
         )
-        print(
-            file_name + " was saved in " + self.checkpoint_path
+        print(file_name + " was saved in " + self.checkpoint_path)
+
+    def save_history(self, history):
+        file_name = f"history_{self.saved_name}{self.epoch}.pt"
+        torch.save(
+            history,
+            self.checkpoint_path + file_name
         )
+        print(file_name + " was saved in " + self.checkpoint_path)
 
 
 @dataclass
@@ -198,6 +204,10 @@ class Trainer:
         #           training execution
         best_acc1 = 0
         avg_val_acc1 = 0
+        history = {
+            "labels": ["avg_train_loss", "avg_train_acc1", "avg_val_loss", "avg_val_acc1"],
+            "history": []
+        }
         print("Beginning training")
         time_begin = time()
         while self.context.epoch-1 <= self.epochs:
@@ -205,6 +215,7 @@ class Trainer:
             self.adjust_learning_rate()
             avg_train_loss, avg_train_acc1 = self.epoch(train=True)
             avg_val_loss, avg_val_acc1 = self.epoch(train=False)
+            history["history"].append([avg_train_loss, avg_train_acc1, avg_val_loss, avg_val_acc1])
 
             total_time = (time() - time_begin) / 60
             print(f'[Epoch {self.context.epoch}] \t \t Top-1 {avg_val_acc1:6.2f} \t \t Time: {total_time:.2f}')
@@ -212,6 +223,7 @@ class Trainer:
 
             if self.conditional_freq(self.context.saving, self.context.epoch+1, self.context.save_freq):
                 self.context.model_saving()
+                self.context.save_history(history)
 
         total_time = (time() - time_begin) / 60
         print(
@@ -220,6 +232,7 @@ class Trainer:
             f'final top-1: {avg_val_acc1:.2f}'
         )
         self.context.model_saving()
+        self.context.save_history(history)
 
         return best_acc1
 
