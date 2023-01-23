@@ -74,7 +74,7 @@ def training_mnist():
         save_freq=5,
         saving=True,
         print_freq=10,
-        printing=True
+        printing=False
     )
 
     print(t_context.train_dataset)
