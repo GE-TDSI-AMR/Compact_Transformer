@@ -88,7 +88,7 @@ def training_mnist():
         gpu_id=0,
         lr=55e-5,
         weight_decay=6e-2,
-        epochs=20,
+        epochs=2,
         warmup=2,
         disable_cos=True,
         clip_grad_norm=0,
@@ -112,4 +112,6 @@ def viz(file_name):
 
 
 if __name__ == "__main__":
-    training_mnist()
+    viz("saved/history_dataset-organsmnist_model-cct_7_3x1_28_11_epoch29.pt")
+    viz("saved/history_dataset-pathmnist_model-cct_7_3x1_28_9_epoch39.pt")
+    viz("saved/history_dataset-retinamnist_model-cct_7_3x1_28_5_epoch119.pt")

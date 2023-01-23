@@ -6,7 +6,8 @@ from scipy.interpolate import make_interp_spline
 figures_path = "figures/"
 
 
-def vis_accuracy(param, train_acc, test_acc, param_name="param"):
+def vis_accuracy(file_name, param, train_acc, test_acc, param_name="param"):
+    fig = plt.figure(figsize=(8, 8))
     param_, train_acc = smoothing(param, train_acc)
     param, test_acc = smoothing(param, test_acc)
     plt.plot(param, train_acc, color="b", label="train")
@@ -22,6 +23,8 @@ def vis_accuracy(param, train_acc, test_acc, param_name="param"):
 
     # function to show plot
     plt.legend()
+    fig.savefig(f"{figures_path}/{}")
+    #file_name.split(".")[0]
     plt.show()
 
 
