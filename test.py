@@ -78,9 +78,7 @@ def training_mnist():
     )
 
     print(t_context.train_dataset)
-    for img, label in t_context.train_loader:
-        print(type(label))
-        break
+    print(t_context.model)
 
     cct = Trainer(
         context=t_context,
