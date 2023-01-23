@@ -47,6 +47,7 @@ class TrainingContext:
     epoch: int = field(default=0, init=False)
     save_freq: int = 10
     saving: bool = True
+    saved_name: str = field(init=False)
 
     # Printing
     print_freq: int = 10
@@ -70,26 +71,25 @@ class TrainingContext:
         )
 
         self.model = models.__dict__[self.model_name](pretrained=self.pretrained)
+        self.saved_name = f"dataset-{self.dataset_name.lower()}_model-{self.model_name}_epoch"
         if self.load_model:
             self.model_loading()
 
     def model_loading(self):
         checkpoint_epochs = [
             int(file.split(".")[0].split("epoch")[1]) for file in os.listdir(self.checkpoint_path)
-            if file.startswith(f"dataset-{self.dataset_name}_model-{self.model_name}_epoch")
+            if file.startswith(self.saved_name)
         ]
         self.epoch = max(checkpoint_epochs) if len(checkpoint_epochs) != 0 else 0
         if self.epoch != 0:
-            model_path = f"{self.checkpoint_path}dataset-{self.dataset_name}_model-{self.model_name}_epoch{self.epoch}.pt"
+            model_path = f"{self.checkpoint_path}{self.saved_name}{self.epoch}.pt"
             print(f"Loading {model_path} to model")
             self.model.load_state_dict(torch.load(model_path))
         else:
             print("No model found to load")
 
     def model_saving(self):
-        file_name = f"/dataset-{self.dataset_name}_" \
-                    f"model-{self.model_name}_" \
-                    f"epoch{self.epoch + 1}.pt"
+        file_name = f"{self.saved_name}{self.epoch}.pt"
         torch.save(
             self.model.state_dict(),
             self.checkpoint_path + file_name
@@ -188,7 +188,7 @@ class Trainer:
                 if self.conditional_freq(self.context.printing, i, self.context.print_freq):
                     avg_loss, avg_acc1 = (loss_val / n), (acc1_val / n)
                     print(
-                        f'[Epoch {self.context.epoch + 1}][{"Train" if train else "Eval"}][{i}] \t Loss: {avg_loss:.4e} \t Top-1 {avg_acc1:6.2f}'
+                        f'[Epoch {self.context.epoch}][{"Train" if train else "Eval"}][{i}] \t Loss: {avg_loss:.4e} \t Top-1 {avg_acc1:6.2f}'
                     )
 
             avg_loss, avg_acc1 = (loss_val / n), (acc1_val / n)
@@ -207,7 +207,7 @@ class Trainer:
             avg_val_loss, avg_val_acc1 = self.epoch(train=False)
 
             total_time = (time() - time_begin) / 60
-            print(f'[Epoch {self.context.epoch + 1}] \t \t Top-1 {avg_val_acc1:6.2f} \t \t Time: {total_time:.2f}')
+            print(f'[Epoch {self.context.epoch}] \t \t Top-1 {avg_val_acc1:6.2f} \t \t Time: {total_time:.2f}')
             best_acc1 = max(avg_val_acc1, best_acc1)
 
             if self.conditional_freq(self.context.saving, self.context.epoch+1, self.context.save_freq):

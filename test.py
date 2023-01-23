@@ -1,6 +1,6 @@
 import torch
 
-import src as models
+import src.image as models
 import os
 
 from trainer import TrainingContext, Trainer
@@ -42,9 +42,10 @@ def model_naming(model_type: str, model_params: dict):
 
 
 if __name__ == "__main__":
-
+    reload()
+    print("reoaeldd")
     model_name = 'cct_7_3x1_32_c100'
-    dataset_name = 'cifar100'
+    dataset_name = 'CIFAR100'
 
     t_context = TrainingContext(
         dataset_name=dataset_name,
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         workers=4,
         pretrained=False,
         load_model=True,
-        checkpoint_path="/saved",
+        checkpoint_path="saved/",
         save_freq=10,
         saving=True,
         print_freq=10,
@@ -62,7 +63,7 @@ if __name__ == "__main__":
 
     cct = Trainer(
         context=t_context,
-        no_cuda=False,
+        no_cuda=True,
         gpu_id=0,
         lr=5e-4,
         weight_decay=1e-4,

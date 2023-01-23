@@ -26,19 +26,20 @@ INFOS = {
 }
 
 
-def tv_ds(data_class):
+def tv_ds(dataset_name, data_class):
     img_size = None
-    if data_class in INFOS:
-        img_size = INFOS[data_class]['img_size']
-        img_mean = INFOS[data_class]['mean']
-        img_std = INFOS[data_class]['std']
+    if dataset_name in INFOS:
+        img_size = INFOS[dataset_name]['img_size']
+        img_mean = INFOS[dataset_name]['mean']
+        img_std = INFOS[dataset_name]['std']
     else:
-        print(f"{data_class} is not present in the INFOS dictionary")
+        print(f"{dataset_name} is not present in the INFOS dictionary")
         img_mean = 0.5
         img_std = 0.5
 
     normalize = [transforms.Normalize(mean=img_mean, std=img_std)]
     cropping = [] if img_size is None else [transforms.RandomCrop(img_size, padding=4)]
+    resize = [] if img_size is None else [transforms.Resize(img_size)]
 
     train_dataset = data_class(
         root=datasets_path, train=True, download=True, transform=transforms.Compose(
@@ -57,7 +58,7 @@ def tv_ds(data_class):
     val_dataset = data_class(
         root=datasets_path, train=False, download=True, transform=transforms.Compose(
             [
-                transforms.Resize(img_size),
+                *resize,
                 transforms.ToTensor(),
                 *normalize,
             ]
@@ -67,7 +68,7 @@ def tv_ds(data_class):
     return train_dataset, val_dataset
 
 
-def medmnist_ds(data_class):
+def medmnist_ds(dataset_name, data_class):
     # preprocessing
     data_transform = transforms.Compose([
         transforms.ToTensor(),
@@ -84,10 +85,10 @@ def medmnist_ds(data_class):
 def ds(dataset_name):
     if dataset_name in datasets.__all__:
         data_class = datasets.__dict__[dataset_name]
-        return tv_ds(data_class)
+        return tv_ds(dataset_name, data_class)
     elif dataset_name in medmnist.INFO:
         data_class = getattr(medmnist, medmnist.INFO[dataset_name]['python_class'])
-        return medmnist_ds(data_class)
+        return medmnist_ds(dataset_name, data_class)
     else:
         print(f"{dataset_name} is not available")
         raise NotImplementedError
